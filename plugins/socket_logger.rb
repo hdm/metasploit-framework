@@ -42,7 +42,7 @@ class Plugin::SocketLogger < Msf::Plugin
 
 
   def initialize(framework, opts)
-    log_path    = opts['path'] || "/tmp"
+    log_path    = opts['path'] || Msf::Config.log_directory
     log_prefix  = opts['prefix'] || "socket_"
 
     super
