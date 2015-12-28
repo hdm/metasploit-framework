@@ -41,7 +41,9 @@ class Console::CommandDispatcher::Android
       'device_shutdown'  => ['device_shutdown'],
       'send_sms'         => ['send_sms'],
       'wlan_geolocate'   => ['wlan_geolocate'],
-      'interval_collect' => ['interval_collect']
+      'interval_collect' => ['interval_collect'],
+      'sqlite_read'      => ['sqlite_read'],
+      'sqlite_write'     => ['sqlite_write']
     }
 
     # Ensure any requirements of the command are met
@@ -526,6 +528,34 @@ class Console::CommandDispatcher::Android
       print_status(g.to_s)
       print_status("Google Maps URL:  #{g.google_maps_url}")
     end
+  end
+
+def cmd_sqlite_write(*args)
+    results = client.android.sqlite_write("SELECT 1")
+    p results
+end
+
+def cmd_sqlite_read(*args)
+    path = "sqlite_read_#{Time.new.strftime('%Y%m%d%H%M%S')}.txt"
+
+    read_opts = Rex::Parser::Arguments.new(
+      '-h' => [ false, 'Help Banner' ],
+      '-o' => [ false, 'Output path for contacts list']
+    )
+
+    read_opts.parse(args) do |opt, _idx, val|
+      case opt
+      when '-h'
+        print_line('Usage: sqlite_read [options]')
+        print_line(read_opts.usage)
+        return
+      when '-o'
+        path = val
+      end
+    end
+
+    results = client.android.sqlite_read("")
+    p results
   end
 
   #
